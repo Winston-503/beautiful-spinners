@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beautiful Spinners - Making Time Fly Since 2024</title>
+    <title>Beautiful Spinners - Making Time Fly Since 2025</title>
     <style>
         * {
             margin: 0;
@@ -730,10 +730,10 @@
 
     <div class="container">
         <header>
-            <h1>Beautiful Spinners</h1>
-            <p class="tagline">Making Time Fly Faster Since 2024</p>
+            <h1>✨ Beautiful Spinners ✨</h1>
+            <p class="tagline">Making Time Fly Faster Since 2025</p>
             <p class="subtitle">Because every loading state deserves to be beautiful</p>
-            <div class="christmas-badge">Merry Christmas from the Team!</div>
+            <div class="christmas-badge">Merry Christmas!</div>
         </header>
 
         <div class="spinner-showcase">
@@ -762,16 +762,23 @@
                     <div class="toggle-switch" id="inception-toggle" onclick="toggleInception()"></div>
                     <div class="inception-label">
                         Spinner-ception
-                        <small>A spinner inside a spinner. Time flies twice as fast!</small>
+                        <small>A spinner inside a spinner. Time flies twice as fast! Use with caution!</small>
                     </div>
                 </div>
             </div>
         </div>
 
         <div class="control-card" style="margin-bottom: 2rem;">
-            <h3>Choose Your Spinner</h3>
+            <h3 id="outer-spinner-label">Choose Your Spinner</h3>
             <div class="spinner-grid" id="spinner-grid">
                 <!-- Spinner options render here -->
+            </div>
+        </div>
+
+        <div class="control-card" id="inner-spinner-card" style="margin-bottom: 2rem; display: none;">
+            <h3>Choose Your Inner Spinner</h3>
+            <div class="spinner-grid" id="inner-spinner-grid">
+                <!-- Inner spinner options render here -->
             </div>
         </div>
 
@@ -780,11 +787,7 @@
             <p class="quote-author" id="quote-author">- A Wise Backend Engineer</p>
         </div>
 
-        <footer>
-            Made with infinite loops of love
-            <br>
-            Happy Holidays from the Team!
-        </footer>
+        <footer></footer>
     </div>
 
     <script>
@@ -844,12 +847,14 @@
         ];
 
         let currentSpinner = 'ring';
+        let innerSpinner = 'neon';
         let inceptionMode = false;
         let currentSpeed = 1;
 
         // Initialize
         function init() {
             renderSpinnerGrid();
+            renderInnerSpinnerGrid();
             renderSpinner();
             createSnowflakes();
             showRandomQuote();
@@ -866,28 +871,43 @@
             `).join('');
         }
 
+        function renderInnerSpinnerGrid() {
+            const grid = document.getElementById('inner-spinner-grid');
+            grid.innerHTML = spinners.map(s => `
+                <div class="spinner-option ${s.id === innerSpinner ? 'active' : ''}"
+                     onclick="selectInnerSpinner('${s.id}')">
+                    <div class="preview">${s.html}</div>
+                    <span>${s.name}</span>
+                </div>
+            `).join('');
+        }
+
         function renderSpinner() {
             const display = document.getElementById('spinner-display');
-            const spinner = spinners.find(s => s.id === currentSpinner);
+            const outerSpinnerObj = spinners.find(s => s.id === currentSpinner);
+            const innerSpinnerObj = spinners.find(s => s.id === innerSpinner);
 
             if (inceptionMode) {
                 display.innerHTML = `
                     <div class="inception-wrapper inception-active">
-                        <div class="inception-outer">${spinner.html}</div>
-                        <div class="inception-inner">${spinner.html}</div>
+                        <div class="inception-outer">${outerSpinnerObj.html}</div>
+                        <div class="inception-inner">${innerSpinnerObj.html}</div>
                     </div>
                 `;
             } else {
-                display.innerHTML = spinner.html;
+                display.innerHTML = outerSpinnerObj.html;
             }
         }
 
         function selectSpinner(id) {
             currentSpinner = id;
-            document.querySelectorAll('.spinner-option').forEach(el => {
-                el.classList.toggle('active', el.querySelector('.preview .spinner-' + id) !== null);
-            });
             renderSpinnerGrid();
+            renderSpinner();
+        }
+
+        function selectInnerSpinner(id) {
+            innerSpinner = id;
+            renderInnerSpinnerGrid();
             renderSpinner();
         }
 
@@ -904,6 +924,8 @@
         function toggleInception() {
             inceptionMode = !inceptionMode;
             document.getElementById('inception-toggle').classList.toggle('active', inceptionMode);
+            document.getElementById('inner-spinner-card').style.display = inceptionMode ? 'block' : 'none';
+            document.getElementById('outer-spinner-label').textContent = inceptionMode ? 'Choose Your Outer Spinner' : 'Choose Your Spinner';
             renderSpinner();
         }
 
