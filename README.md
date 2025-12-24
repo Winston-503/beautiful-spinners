@@ -19,4 +19,4 @@ Visit: https://Winston-503.github.io/beautiful-spinners/
 ## Made With
 
 - Pure HTML, CSS, and JavaScript; zero dependencies (just like time itself)
-- Claude Code with Claude Opus 4.5 (~2$ of credits)
+- Claude Code with Claude Opus 4.5 (~3$ of credits)

@@ -762,7 +762,7 @@
                     <div class="toggle-switch" id="inception-toggle" onclick="toggleInception()"></div>
                     <div class="inception-label">
                         Spinner-ception
-                        <small>A spinner inside a spinner. Time flies twice as fast! Use with caution!</small>
+                        <small>A spinner inside a spinner. Use with caution!</small>
                     </div>
                 </div>
             </div>
@@ -911,14 +911,22 @@
             renderSpinner();
         }
 
+        let currentSpeedText = 'fast';
+
         function setSpeed(speed, text) {
             currentSpeed = speed;
+            currentSpeedText = text;
             document.documentElement.style.setProperty('--spinner-speed', speed + 's');
-            document.getElementById('speed-text').textContent = text;
+            updateSpeedText();
 
             document.querySelectorAll('.speed-btn').forEach(btn => {
                 btn.classList.toggle('active', parseFloat(btn.dataset.speed) === speed);
             });
+        }
+
+        function updateSpeedText() {
+            const suffix = inceptionMode ? ' (x2)' : '';
+            document.getElementById('speed-text').textContent = currentSpeedText + suffix;
         }
 
         function toggleInception() {
@@ -926,6 +934,7 @@
             document.getElementById('inception-toggle').classList.toggle('active', inceptionMode);
             document.getElementById('inner-spinner-card').style.display = inceptionMode ? 'block' : 'none';
             document.getElementById('outer-spinner-label').textContent = inceptionMode ? 'Choose Your Outer Spinner' : 'Choose Your Spinner';
+            updateSpeedText();
             renderSpinner();
         }
 
