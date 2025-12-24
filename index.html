@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Spinners - Making Time Fly Since 2024</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --spinner-speed: 1s;
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #f093fb;
+            --bg-dark: #0f0f23;
+            --bg-card: #1a1a2e;
+            --text: #ffffff;
+            --text-muted: #a0a0b0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Snowflakes */
+        .snowflakes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: #fff;
+            font-size: 1em;
+            animation: fall linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .christmas-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #c41e3a, #2e8b57);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px #c41e3a; }
+            to { box-shadow: 0 0 20px #2e8b57, 0 0 30px #c41e3a; }
+        }
+
+        /* Main spinner display */
+        .spinner-showcase {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spinner-showcase::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            animation: rotate-bg 20s linear infinite;
+        }
+
+        @keyframes rotate-bg {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+
+        .time-flying-text {
+            margin-top: 2rem;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            z-index: 1;
+        }
+
+        .time-flying-text span {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        /* Controls */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .control-card {
+            background: var(--bg-card);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-card h3 {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Speed selector */
+        .speed-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .speed-btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .speed-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .speed-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .speed-btn.ludicrous {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .speed-btn.ludicrous:not(.active) {
+            animation: none;
+            background: rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-2px) rotate(-1deg); }
+            75% { transform: translateX(2px) rotate(1deg); }
+        }
+
+        /* Spinner selector */
+        .spinner-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .spinner-option {
+            aspect-ratio: 1;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem;
+        }
+
+        .spinner-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .spinner-option.active {
+            border-color: var(--primary);
+            background: rgba(102, 126, 234, 0.2);
+        }
+
+        .spinner-option .preview {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-option span {
+            font-size: 0.65rem;
+            margin-top: 0.25rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* Inception Mode */
+        .inception-toggle {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            background: white;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active::after {
+            left: 31px;
+        }
+
+        .inception-label {
+            font-size: 1rem;
+        }
+
+        .inception-label small {
+            display: block;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        /* Spinner Styles */
+        .spinner {
+            --speed: var(--spinner-speed);
+        }
+
+        /* 1. Classic Ring */
+        .spinner-ring {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: var(--primary);
+            border-right-color: var(--accent);
+            border-radius: 50%;
+            animation: spin var(--speed) linear infinite;
+        }
+
+        /* 2. Pulse Dots */
+        .spinner-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .spinner-dots .dot {
+            width: 16px;
+            height: 16px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: bounce var(--speed) ease-in-out infinite;
+        }
+
+        .spinner-dots .dot:nth-child(2) {
+            animation-delay: calc(var(--speed) * 0.15);
+            background: var(--secondary);
+        }
+
+        .spinner-dots .dot:nth-child(3) {
+            animation-delay: calc(var(--speed) * 0.3);
+            background: var(--accent);
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+
+        /* 3. Orbit */
+        .spinner-orbit {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .spinner-orbit .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .spinner-orbit .orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: spin var(--speed) linear infinite;
+        }
+
+        .spinner-orbit .planet {
+            position: absolute;
+            top: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        .spinner-orbit .orbit:nth-child(2) {
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+            animation-direction: reverse;
+            animation-duration: calc(var(--speed) * 0.7);
+        }
+
+        .spinner-orbit .orbit:nth-child(2) .planet {
+            background: var(--secondary);
+            width: 8px;
+            height: 8px;
+            top: -4px;
+        }
+
+        /* 4. DNA Helix */
+        .spinner-dna {
+            display: flex;
+            gap: 4px;
+            height: 60px;
+        }
+
+        .spinner-dna .strand {
+            width: 8px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .spinner-dna .node {
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            animation: dna-wave var(--speed) ease-in-out infinite;
+        }
+
+        .spinner-dna .strand:nth-child(2) .node { animation-delay: calc(var(--speed) * 0.1); background: var(--secondary); }
+        .spinner-dna .strand:nth-child(3) .node { animation-delay: calc(var(--speed) * 0.2); background: var(--accent); }
+        .spinner-dna .strand:nth-child(4) .node { animation-delay: calc(var(--speed) * 0.3); background: var(--primary); }
+        .spinner-dna .strand:nth-child(5) .node { animation-delay: calc(var(--speed) * 0.4); background: var(--secondary); }
+
+        @keyframes dna-wave {
+            0%, 100% { transform: scaleY(1); opacity: 1; }
+            50% { transform: scaleY(2); opacity: 0.5; }
+        }
+
+        /* 5. Cube 3D */
+        .spinner-cube {
+            width: 50px;
+            height: 50px;
+            perspective: 200px;
+        }
+
+        .spinner-cube .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: cube-rotate var(--speed) linear infinite;
+        }
+
+        .spinner-cube .face {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 2px solid var(--primary);
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .spinner-cube .face:nth-child(1) { transform: rotateY(0deg) translateZ(25px); }
+        .spinner-cube .face:nth-child(2) { transform: rotateY(90deg) translateZ(25px); border-color: var(--secondary); }
+        .spinner-cube .face:nth-child(3) { transform: rotateY(180deg) translateZ(25px); border-color: var(--accent); }
+        .spinner-cube .face:nth-child(4) { transform: rotateY(-90deg) translateZ(25px); }
+
+        @keyframes cube-rotate {
+            from { transform: rotateX(45deg) rotateY(0deg); }
+            to { transform: rotateX(45deg) rotateY(360deg); }
+        }
+
+        /* 6. Galaxy */
+        .spinner-galaxy {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            animation: spin var(--speed) linear infinite;
+        }
+
+        .spinner-galaxy .arm {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            animation: spin calc(var(--speed) * 2) linear infinite reverse;
+        }
+
+        .spinner-galaxy .star {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        .spinner-galaxy .star:nth-child(1) { top: 50%; left: 10%; }
+        .spinner-galaxy .star:nth-child(2) { top: 20%; left: 30%; width: 4px; height: 4px; }
+        .spinner-galaxy .star:nth-child(3) { top: 70%; left: 60%; width: 5px; height: 5px; }
+        .spinner-galaxy .star:nth-child(4) { top: 30%; left: 80%; }
+
+        .spinner-galaxy .core {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, var(--accent), var(--primary));
+            border-radius: 50%;
+            box-shadow: 0 0 30px var(--primary);
+        }
+
+        /* 7. Neon Rings */
+        .spinner-neon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .spinner-neon .ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            animation: spin var(--speed) linear infinite;
+        }
+
+        .spinner-neon .ring:nth-child(1) {
+            width: 100%;
+            height: 100%;
+            border-top-color: #00ff88;
+            border-right-color: #00ff88;
+            box-shadow: 0 0 15px #00ff88;
+        }
+
+        .spinner-neon .ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-bottom-color: #ff00ff;
+            border-left-color: #ff00ff;
+            animation-direction: reverse;
+            animation-duration: calc(var(--speed) * 0.75);
+            box-shadow: 0 0 15px #ff00ff;
+        }
+
+        .spinner-neon .ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: #00ffff;
+            animation-duration: calc(var(--speed) * 0.5);
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        /* 8. Atom */
+        .spinner-atom {
+            width: 80px;
+            height: 80px;
+            position: relative;
+        }
+
+        .spinner-atom .nucleus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent);
+        }
+
+        .spinner-atom .electron-orbit {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            animation: spin var(--speed) linear infinite;
+        }
+
+        .spinner-atom .electron-orbit:nth-child(2) {
+            transform: rotateX(60deg);
+            animation-delay: calc(var(--speed) * -0.33);
+        }
+
+        .spinner-atom .electron-orbit:nth-child(3) {
+            transform: rotateX(-60deg);
+            animation-delay: calc(var(--speed) * -0.66);
+        }
+
+        .spinner-atom .electron {
+            position: absolute;
+            top: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 8px;
+            height: 8px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Inception Mode Styles */
+        .inception-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .inception-outer {
+            transform: scale(1.8);
+            opacity: 0.6;
+        }
+
+        .inception-inner {
+            position: absolute;
+            transform: scale(0.5);
+        }
+
+        .inception-active .inception-outer {
+            animation: inception-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes inception-pulse {
+            0%, 100% { transform: scale(1.8); opacity: 0.6; }
+            50% { transform: scale(2); opacity: 0.8; }
+        }
+
+        /* Preview spinners (smaller) */
+        .preview .spinner-ring { width: 30px; height: 30px; border-width: 2px; }
+        .preview .spinner-dots .dot { width: 6px; height: 6px; }
+        .preview .spinner-dots { gap: 3px; }
+        .preview .spinner-orbit { width: 30px; height: 30px; }
+        .preview .spinner-orbit .center { width: 6px; height: 6px; }
+        .preview .spinner-orbit .planet { width: 4px; height: 4px; top: -2px; }
+        .preview .spinner-orbit .orbit:nth-child(2) .planet { width: 3px; height: 3px; top: -1.5px; }
+        .preview .spinner-dna { height: 25px; gap: 2px; }
+        .preview .spinner-dna .node { width: 4px; height: 4px; }
+        .preview .spinner-cube { width: 20px; height: 20px; }
+        .preview .spinner-cube .face { width: 20px; height: 20px; border-width: 1px; }
+        .preview .spinner-cube .face:nth-child(1) { transform: rotateY(0deg) translateZ(10px); }
+        .preview .spinner-cube .face:nth-child(2) { transform: rotateY(90deg) translateZ(10px); }
+        .preview .spinner-cube .face:nth-child(3) { transform: rotateY(180deg) translateZ(10px); }
+        .preview .spinner-cube .face:nth-child(4) { transform: rotateY(-90deg) translateZ(10px); }
+        .preview .spinner-galaxy { width: 30px; height: 30px; }
+        .preview .spinner-galaxy .star { width: 2px; height: 2px; }
+        .preview .spinner-galaxy .core { width: 8px; height: 8px; }
+        .preview .spinner-neon { width: 30px; height: 30px; }
+        .preview .spinner-neon .ring { border-width: 1.5px; }
+        .preview .spinner-atom { width: 30px; height: 30px; }
+        .preview .spinner-atom .nucleus { width: 5px; height: 5px; }
+        .preview .spinner-atom .electron-orbit { border-width: 1px; }
+        .preview .spinner-atom .electron { width: 3px; height: 3px; top: -1.5px; }
+
+        /* Fun quotes */
+        .quote-section {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .quote::before { content: '"'; }
+        .quote::after { content: '"'; }
+
+        .quote-author {
+            margin-top: 0.5rem;
+            color: var(--accent);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .spinner-showcase { padding: 2rem; min-height: 300px; }
+            .controls { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Snowflakes -->
+    <div class="snowflakes" id="snowflakes"></div>
+
+    <div class="container">
+        <header>
+            <h1>Beautiful Spinners</h1>
+            <p class="tagline">Making Time Fly Faster Since 2024</p>
+            <p class="subtitle">Because every loading state deserves to be beautiful</p>
+            <div class="christmas-badge">Merry Christmas from the Team!</div>
+        </header>
+
+        <div class="spinner-showcase">
+            <div class="spinner-container" id="spinner-display">
+                <!-- Active spinner renders here -->
+            </div>
+            <p class="time-flying-text">
+                Time is flying <span id="speed-text">fast</span>!
+            </p>
+        </div>
+
+        <div class="controls">
+            <div class="control-card">
+                <h3>How Fast Should Time Fly?</h3>
+                <div class="speed-buttons">
+                    <button class="speed-btn active" data-speed="1" onclick="setSpeed(1, 'fast')">Fast</button>
+                    <button class="speed-btn" data-speed="0.5" onclick="setSpeed(0.5, 'very fast')">Very Fast</button>
+                    <button class="speed-btn" data-speed="0.25" onclick="setSpeed(0.25, 'extremely fast')">Extremely Fast</button>
+                    <button class="speed-btn ludicrous" data-speed="0.1" onclick="setSpeed(0.1, 'at LUDICROUS SPEED')">LUDICROUS</button>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <h3>Inception Mode</h3>
+                <div class="inception-toggle">
+                    <div class="toggle-switch" id="inception-toggle" onclick="toggleInception()"></div>
+                    <div class="inception-label">
+                        Spinner-ception
+                        <small>A spinner inside a spinner. Time flies twice as fast!</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="control-card" style="margin-bottom: 2rem;">
+            <h3>Choose Your Spinner</h3>
+            <div class="spinner-grid" id="spinner-grid">
+                <!-- Spinner options render here -->
+            </div>
+        </div>
+
+        <div class="quote-section">
+            <p class="quote" id="quote">Spinners don't just show loading - they make time fly faster!</p>
+            <p class="quote-author" id="quote-author">- A Wise Backend Engineer</p>
+        </div>
+
+        <footer>
+            Made with infinite loops of love
+            <br>
+            Happy Holidays from the Team!
+        </footer>
+    </div>
+
+    <script>
+        // Spinner configurations
+        const spinners = [
+            {
+                id: 'ring',
+                name: 'Classic',
+                html: '<div class="spinner spinner-ring"></div>'
+            },
+            {
+                id: 'dots',
+                name: 'Pulse',
+                html: '<div class="spinner spinner-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>'
+            },
+            {
+                id: 'orbit',
+                name: 'Orbit',
+                html: '<div class="spinner spinner-orbit"><div class="orbit"><div class="planet"></div></div><div class="orbit"><div class="planet"></div></div><div class="center"></div></div>'
+            },
+            {
+                id: 'dna',
+                name: 'DNA',
+                html: '<div class="spinner spinner-dna"><div class="strand"><div class="node"></div><div class="node"></div></div><div class="strand"><div class="node"></div><div class="node"></div></div><div class="strand"><div class="node"></div><div class="node"></div></div><div class="strand"><div class="node"></div><div class="node"></div></div><div class="strand"><div class="node"></div><div class="node"></div></div></div>'
+            },
+            {
+                id: 'cube',
+                name: '3D Cube',
+                html: '<div class="spinner spinner-cube"><div class="cube"><div class="face"></div><div class="face"></div><div class="face"></div><div class="face"></div></div></div>'
+            },
+            {
+                id: 'galaxy',
+                name: 'Galaxy',
+                html: '<div class="spinner spinner-galaxy"><div class="arm"><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div></div><div class="core"></div></div>'
+            },
+            {
+                id: 'neon',
+                name: 'Neon',
+                html: '<div class="spinner spinner-neon"><div class="ring"></div><div class="ring"></div><div class="ring"></div></div>'
+            },
+            {
+                id: 'atom',
+                name: 'Atom',
+                html: '<div class="spinner spinner-atom"><div class="electron-orbit"><div class="electron"></div></div><div class="electron-orbit"><div class="electron"></div></div><div class="electron-orbit"><div class="electron"></div></div><div class="nucleus"></div></div>'
+            }
+        ];
+
+        const quotes = [
+            { text: "Spinners don't just show loading - they make time fly faster!", author: "A Wise Backend Engineer" },
+            { text: "The faster the spinner, the faster the transaction confirms.", author: "Blockchain Philosophy" },
+            { text: "I don't always wait for async operations, but when I do, I use a beautiful spinner.", author: "The Most Interesting Developer" },
+            { text: "A watched spinner never stops... or does it?", author: "Ancient Dev Proverb" },
+            { text: "To spin or not to spin? Always spin.", author: "William Loadspeare" },
+            { text: "Give me a beautiful spinner and I shall move the world.", author: "Archimedes (probably)" },
+            { text: "In the beginning there was loading, and it was slow. Then came spinners.", author: "Book of UX, 1:1" },
+            { text: "Time flies like an arrow, but flies even faster with a spinner.", author: "Groucho Webpack" }
+        ];
+
+        let currentSpinner = 'ring';
+        let inceptionMode = false;
+        let currentSpeed = 1;
+
+        // Initialize
+        function init() {
+            renderSpinnerGrid();
+            renderSpinner();
+            createSnowflakes();
+            showRandomQuote();
+        }
+
+        function renderSpinnerGrid() {
+            const grid = document.getElementById('spinner-grid');
+            grid.innerHTML = spinners.map(s => `
+                <div class="spinner-option ${s.id === currentSpinner ? 'active' : ''}"
+                     onclick="selectSpinner('${s.id}')">
+                    <div class="preview">${s.html}</div>
+                    <span>${s.name}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderSpinner() {
+            const display = document.getElementById('spinner-display');
+            const spinner = spinners.find(s => s.id === currentSpinner);
+
+            if (inceptionMode) {
+                display.innerHTML = `
+                    <div class="inception-wrapper inception-active">
+                        <div class="inception-outer">${spinner.html}</div>
+                        <div class="inception-inner">${spinner.html}</div>
+                    </div>
+                `;
+            } else {
+                display.innerHTML = spinner.html;
+            }
+        }
+
+        function selectSpinner(id) {
+            currentSpinner = id;
+            document.querySelectorAll('.spinner-option').forEach(el => {
+                el.classList.toggle('active', el.querySelector('.preview .spinner-' + id) !== null);
+            });
+            renderSpinnerGrid();
+            renderSpinner();
+        }
+
+        function setSpeed(speed, text) {
+            currentSpeed = speed;
+            document.documentElement.style.setProperty('--spinner-speed', speed + 's');
+            document.getElementById('speed-text').textContent = text;
+
+            document.querySelectorAll('.speed-btn').forEach(btn => {
+                btn.classList.toggle('active', parseFloat(btn.dataset.speed) === speed);
+            });
+        }
+
+        function toggleInception() {
+            inceptionMode = !inceptionMode;
+            document.getElementById('inception-toggle').classList.toggle('active', inceptionMode);
+            renderSpinner();
+        }
+
+        function createSnowflakes() {
+            const container = document.getElementById('snowflakes');
+            const flakes = ['*', '❄', '❅', '❆', '✦'];
+
+            for (let i = 0; i < 50; i++) {
+                const flake = document.createElement('div');
+                flake.className = 'snowflake';
+                flake.textContent = flakes[Math.floor(Math.random() * flakes.length)];
+                flake.style.left = Math.random() * 100 + '%';
+                flake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+                flake.style.animationDelay = (Math.random() * 10) + 's';
+                flake.style.fontSize = (Math.random() * 0.8 + 0.5) + 'em';
+                container.appendChild(flake);
+            }
+        }
+
+        function showRandomQuote() {
+            const quote = quotes[Math.floor(Math.random() * quotes.length)];
+            document.getElementById('quote').textContent = quote.text;
+            document.getElementById('quote-author').textContent = '- ' + quote.author;
+
+            // Change quote every 10 seconds
+            setTimeout(showRandomQuote, 10000);
+        }
+
+        // Start the app
+        init();
+    </script>
+</body>
+</html>
